@@ -1,0 +1,141 @@
+// ==UserScript==
+// @id             iitc-plugin-cluster-mate
+// @name           CLUSTER-MATE
+// @category       Tweaks
+// @version        0.1.0.20160609.030500
+// @namespace      https://github.com/jonatkins/ingress-intel-total-conversion
+// @updateURL      null
+// @downloadURL    null
+// @description    null
+// @include        https://www.ingress.com/intel*
+// @include        http://www.ingress.com/intel*
+// @match          https://www.ingress.com/intel*
+// @match          http://www.ingress.com/intel*
+// @include        https://www.ingress.com/mission/*
+// @include        http://www.ingress.com/mission/*
+// @match          https://www.ingress.com/mission/*
+// @match          http://www.ingress.com/mission/*
+// @grant          none
+// ==/UserScript==
+
+
+function wrapper(plugin_info) {
+// ensure plugin framework is there, even if iitc is not yet loaded
+if(typeof window.plugin !== 'function') window.plugin = function() {};
+
+//PLUGIN AUTHORS: writing a plugin outside of the IITC build environment? if so, delete these lines!!
+//(leaving them in place might break the 'About IITC' page or break update checks)
+plugin_info.buildName = 'ISITRIGGAH';
+plugin_info.dateTimeVersion = '0.1.0.20160609.030500';
+plugin_info.pluginId = 'cluster-mate';
+//END PLUGIN AUTHORS NOTE
+
+
+
+// PLUGIN START ////////////////////////////////////////////////////////
+
+// CLUSTER-MATE is a stand-alone plugin born to monitor an anomaly site, hides useless iitc tabs
+//              in a view-only mode, prevents iitc to go idle, refreshes the browser periodically
+//              at given time intervals (not during measurements timespans) to keep it fast and
+//              automatically cycles between clusters and site view during measurements.
+
+// REPLACE ANOMALY SITE AND CLUSTER URLs HERE ////////////////////////////////////////////////////
+
+  var siteurl  = 'https://www.ingress.com/intel?ll=43.703119,7.252933&z=13';  //ANOMALY ZONE URL
+  var cluster1 = 'https://www.ingress.com/intel?ll=43.704724,7.242192&z=18';  //CLUSTER 1
+  var cluster2 = 'https://www.ingress.com/intel?ll=43.706539,7.250049&z=18';  //CLUSTER 2
+  var cluster3 = 'https://www.ingress.com/intel?ll=43.703429,7.259114&z=18';  //CLUSTER 3
+  var cluster4 = 'https://www.ingress.com/intel?ll=43.699837,7.277654&z=18';  //CLUSTER 4
+
+// SET TIMINGS HERE //////////////////////////////////////////////////////////////////////////////
+
+  var refresh1 = 5; // Set time check for cluster time-related position in SECONDS here
+  var refresh2 = 1; // Set time check for autoreloading intel map in MINUTES here
+
+  var measurement1 = 14; // FIRST measurement (HOURS ONLY)
+  var measurement2 = 15; // FIRST measurement (HOURS ONLY)
+  var measurement3 = 16; // FIRST measurement (HOURS ONLY)
+  var measurement4 = 17; // FIRST measurement (HOURS ONLY)
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
+
+window.plugin.clusterMate = function() {};
+window.plugin.clusterCycle = function() {};
+window.plugin.autoReload = function() {};
+window.plugin.cleanCast = function() {};
+    
+    
+window.plugin.clusterCycle.wakeup = function(elm) {  //ClusterCycle
+    
+  var clusterurl;
+  var my_hour = new Date().getHours();
+  if (my_hour === measurement1) {clusterurl = cluster1;
+   } else if (my_hour === measurement2) {clusterurl = cluster2;
+   } else if (my_hour === measurement3) {clusterurl = cluster3;
+   } else if (my_hour === measurement4) {clusterurl = cluster4;
+   } else if (my_hour != measurement1 && my_hour != measurement2 && my_hour != measurement3 && my_hour != measurement4) {clusterurl = siteurl;
+                              }
+    
+  var my_min = new Date().getMinutes();
+   if (my_min >= 0 && my_min <= 10) {  // Switches between cluster and site view in a given timespan
+       if (window.location.href != clusterurl) {window.location.assign(clusterurl);}
+   }else { if (window.location.href != siteurl) {window.location.assign(siteurl);}
+  }
+    console.log('TIME-RELATED MAP POSITION CHECK');
+    idleReset();
+};
+    
+    
+window.plugin.autoReload.wakeup = function(elm) {  // AutoReload
+    
+  var c = map.getCenter();
+  var lat = Math.round(c.lat*1E6)/1E6;
+  var lng = Math.round(c.lng*1E6)/1E6;
+  var qry = 'll='+lat+','+lng+'&z=' + map.getZoom();
+  var currenturl = ('https://www.ingress.com/intel?' + qry);
+  var minrel = new Date().getMinutes();
+  console.log('EVALUATING PAGE REFRESH');
+  if (minrel >=11 && minrel <=59) {  // Disables page-reloading during measurements
+  window.location.assign(currenturl);}
+};
+    
+    
+window.plugin.cleanCast.wakeup = function() {  // CleanCast
+    
+    $('#scrollwrapper').remove();
+    $('#sidebartoggle').remove();
+    $('#chatcontrols').remove();
+    $('#chat').remove();
+    $('#chatinput').remove();
+    $('a').remove(".leaflet-control-layers-toggle");
+    $('a').remove(".leaflet-control-zoom-in");
+    $('a').remove(".leaflet-control-zoom-out");
+    $('.leaflet-bottom leaflet-left').remove();
+    $('.leaflet-control-container').remove();
+};
+    
+    
+window.plugin.clusterMate.setup = function() {
+    
+  window.plugin.cleanCast.wakeup();
+  setInterval ( window.plugin.clusterCycle.wakeup, refresh1*1000 );
+  setInterval ( window.plugin.autoReload.wakeup, refresh2*60*1000 );
+};
+
+var setup = window.plugin.clusterMate.setup;
+
+// PLUGIN END //////////////////////////////////////////////////////////
+
+setup.info = plugin_info; //add the script info data to the function as a property
+if(!window.bootPlugins) window.bootPlugins = [];
+window.bootPlugins.push(setup);
+// if IITC has already booted, immediately run the 'setup' function
+if(window.iitcLoaded && typeof setup === 'function') setup();
+} // wrapper end
+// inject code into site context
+var script = document.createElement('script');
+var info = {};
+if (typeof GM_info !== 'undefined' && GM_info && GM_info.script) info.script = { version: GM_info.script.version, name: GM_info.script.name, description: GM_info.script.description };
+script.appendChild(document.createTextNode('('+ wrapper +')('+JSON.stringify(info)+');'));
+(document.body || document.head || document.documentElement).appendChild(script);
+
