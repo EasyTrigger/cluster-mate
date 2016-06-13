@@ -5,7 +5,7 @@
 // @author         @EasyTrigger
 // @version        1.0.0.20161306.041000
 // @namespace      https://github.com/jonatkins/ingress-intel-total-conversion
-// @updateURL      https://github.com/EasyTrigger/cluster-mate/blob/master/CLUSTER-MATE.js
+// @updateURL      http://github.com/EasyTrigger/cluster-mate/blob/master/CLUSTER-MATE.js
 // @downloadURL    https://github.com/EasyTrigger/cluster-mate/blob/master/CLUSTER-MATE.js
 // @description    See plug-in info prova
 // @include        https://www.ingress.com/intel*
