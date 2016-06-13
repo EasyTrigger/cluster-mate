@@ -1,12 +1,13 @@
 // ==UserScript==
 // @id             iitc-plugin-cluster-mate
 // @name           CLUSTER-MATE
-// @category       Tweaks
+// @category       Mods
+// @author         @EasyTrigger
 // @version        0.1.0.20160609.030500
 // @namespace      https://github.com/jonatkins/ingress-intel-total-conversion
-// @updateURL      null
-// @downloadURL    null
-// @description    null
+// @updateURL      https://github.com/EasyTrigger/cluster-mate/blob/master/CLUSTER-MATE.js
+// @downloadURL    https://github.com/EasyTrigger/cluster-mate/blob/master/CLUSTER-MATE.js
+// @description    See plug-in info
 // @include        https://www.ingress.com/intel*
 // @include        http://www.ingress.com/intel*
 // @match          https://www.ingress.com/intel*
