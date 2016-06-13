@@ -3,7 +3,7 @@
 // @name           CLUSTER-MATE
 // @category       Mods
 // @author         @EasyTrigger
-// @version        0.1.1.20160613.040600
+// @version        0.2.0.20160613.040600
 // @namespace      https://github.com/jonatkins/ingress-intel-total-conversion
 // @updateURL      https://github.com/EasyTrigger/cluster-mate/blob/master/CLUSTER-MATE.js
 // @downloadURL    https://github.com/EasyTrigger/cluster-mate/blob/master/CLUSTER-MATE.js
